@@ -22,7 +22,7 @@
  */
 
 
-require_once(dirname(dirname(__FILE__)) . '../../../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    // It must be included from a Moodle page.
 }
@@ -37,6 +37,8 @@ $res = $connection->get_exams();
 if (isset($res)) {
     if ($res["success"] == true) {
         write(get_string('well_connected' , 'local_tomax'));
+    } else if (isset($res["message"])) {
+        write($res["message"]);
     } else {
         write(get_string('connection_auth_error' , 'local_tomax'));
     }

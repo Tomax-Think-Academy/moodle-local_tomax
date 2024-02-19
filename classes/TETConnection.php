@@ -47,50 +47,78 @@ class tomaetest_connection
         return null;
     }
 
-    public static function post_request($method, $postdata, $parameters = []) {
+    private static function convert_query_params($params) {
+        if (empty($params)) {
+            return "";
+        }
+        if (is_array($params) || is_object($params)) {
+            return "?" . http_build_query($params);
+        }
+        // TODORON: handle bad params
+    }
+
+    public static function post_request($endpoint, $payload, $parameters = []) {
+        return self::request("POST", $endpoint, $parameters, $payload);
+    }
+
+    public static function get_request($endpoint, $parameters = []) {
+        return self::request("GET", $endpoint, $parameters, []);
+    }
+
+    private static function request($method, $endpoint, $parameters, $payload) {
         $configcheck = self::check_config();
         if (isset($configcheck)) {
             return $configcheck;
         }
         $config = static::$config;
-        etest_log("================== post $method to :$config->domain ====================");
-        $url = "https://$config->domain.tomaetest.com/TomaETest/api/dashboard/WS/$method$parameters";
+        $queryparams = self::convert_query_params($parameters);
+        etest_log("================== $method $endpoint to :$config->domain ====================");
+        $url = "https://$config->domain.tomaetest.com/TomaETest/api/dashboard/WS/$endpoint$queryparams";
 
-        etest_log("url : " . $url);
-        etest_log("postdata : " . json_encode($postdata));
-
+        etest_log("url: " . $url);
+        
         $curl = curl_init();
-
-        curl_setopt_array($curl, array(
+        
+        $options = array(
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => json_encode($postdata),
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_HTTPHEADER => [
                 "cache-control: no-cache",
-                "x-apikey: " . $config->apikey,
+                "x-apikey: " . $config->etestapikey,
                 "x-userid: " . $config->etestuserid
             ]
-        ));
+        );
+        if ($method == "POST") {
+            etest_log("payload: " . json_encode($payload));
+            array_push($options, [
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => json_encode($payload)
+            ]);
+        }
+
+        curl_setopt_array($curl, $options);
 
         $response = curl_exec($curl);
         $err = curl_error($curl);
         curl_close($curl);
 
-        etest_log("response : " . $response);
+        etest_log("================== end $method $endpoint to $config->domain ====================");
 
-        etest_log("================== end post $method to $config->domain ====================");
-
-        return json_decode($response, true);
+        if ($response) {
+            etest_log("response: " . $response);
+            return json_decode($response, true);
+        }
+        etest_log("err: " . $err);
+        return ["success" => false, "message" => $err];
     }
 
     public static function get_exams() {
-        $result = static::post_request(
+        $result = self::get_request(
             "exam/list",
             []
         );
@@ -329,3 +357,6 @@ class tomaetest_connection
     
 }
 tomaetest_connection::$config = get_config('local_tomax');
+
+function etest_log($item) {
+}

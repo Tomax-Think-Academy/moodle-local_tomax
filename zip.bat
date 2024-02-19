@@ -4,6 +4,7 @@ copy * tomax
 Xcopy  /S /I /E classes  tomax\classes
 Xcopy  /S /I /E db  tomax\db
 Xcopy  /S /I /E lang  tomax\lang
+Xcopy  /S /I /E misc  tomax\misc
 rmdir tomax\tomax /s /q
 tar.exe -a -c -f tomax-base-moodle.zip tomax
 rmdir tomax /s /q
