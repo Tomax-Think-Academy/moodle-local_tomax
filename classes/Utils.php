@@ -22,34 +22,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+ use local_tomax\Constants;
+
 class tomax_utils
 {
-
-
-    const IDENTIFIER_BY_EMAIL = 0;
-    const IDENTIFIER_BY_ID = 1;
-    const IDENTIFIER_BY_USERNAME = 2;
-    const IDENTIFIER_BY_ORBITID = 3;
-    const IDENTIFIER_BY_HUJIID = 4;
-
+    public static $config;
 
     public static function get_external_id_for_teacher($user) {
-
-        global $DB;
         $output = null;
-        if (tomaetest_connection::$config->tomaetest_teacherID == self::IDENTIFIER_BY_EMAIL) {
+        if (self::$config->tomax_teacherID == Constants::IDENTIFIER_BY_EMAIL) {
             $output = $user->email;
-        } else if (tomaetest_connection::$config->tomaetest_teacherID == self::IDENTIFIER_BY_ID) {
+        } else if (self::$config->tomaxt_teacherID == Constants::IDENTIFIER_BY_ID) {
             $output = $user->idnumber;
-
-        } else if (tomaetest_connection::$config->tomaetest_teacherID == self::IDENTIFIER_BY_HUJIID) {
-            $output = $user->idnumber;
-
-            $hudjiddata = $DB->get_field_sql("SELECT hujiid FROM huji.userdata WHERE tz=?", array('tz' => $user->idnumber));
-
-            if ($hudjiddata !== false ) {
-                $output = $hudjiddata;
-            }
         }
         return $output;
 
@@ -58,32 +42,101 @@ class tomax_utils
     public static function get_external_id_for_participant($user) {
 
         global $DB;
-        if (tomaetest_connection::$config->tomaetest_studentID == self::IDENTIFIER_BY_EMAIL) {
+        if (self::$config->tomax_studentID == Constants::IDENTIFIER_BY_EMAIL) {
             $output = $user->email;
-        } else if (tomaetest_connection::$config->tomaetest_studentID == self::IDENTIFIER_BY_ID) {
+        } else if (self::$config->tomax_studentID == Constants::IDENTIFIER_BY_ID) {
             $output = $user->idnumber;
-        } else if (tomaetest_connection::$config->tomaetest_studentID == self::IDENTIFIER_BY_USERNAME) {
+        } else if (self::$config->tomax_studentID == Constants::IDENTIFIER_BY_USERNAME) {
             $output = $user->username;
-        } else if (tomaetest_connection::$config->tomaetest_studentID == self::IDENTIFIER_BY_ORBITID) {
-            $output = $user->idnumber;
-
-            $orbitiddata = $DB->get_records_sql("select o.orbitid from {import_interface_user} o
-             JOIN {user} m ON o.username=m.username where m.id = ?", array($user->id));
-
-            if (count($orbitiddata) > 0) {
-
-                $output = reset($orbitiddata)->orbitid;
-            }
         }
         return $output;
     }
 
+    public static function get_teacher_id($userid) {
+        global $DB;
+        $user = $DB->get_record('user', array('id' => $userid));
+        return self::get_external_id_for_teacher($user);
+    }
+    
+    public static function moodle_participants_to_tet_participants($moodlearray) {
+        return
+            array_map(function ($student) {
+                $newstudent = new stdClass();
+                $newstudent->TETParticipantFirstName = $student->firstname;
+                $newstudent->TETParticipantLastName = $student->lastname;
+                $newstudent->TETParticipantPhone = $student->phone1;
+                $newstudent->TETParticipantIdentity = self::get_external_id_for_participant($student);
+                return $newstudent;
+            }, $moodlearray);
+    }
+
+    public static function moodle_users_to_tet_users($moodlearray) {
+        return array_map(function ($user) {
+            $newuser = new stdClass();
+
+            $newuser->EtestRole = "ROLE_MOODLE";
+            // TODORON: change to role based on role in moodle
+            $newuser->TETExternalID = static::get_external_id_for_teacher($user);
+            $newuser->UserName = static::get_external_id_for_teacher($user);
+            $newuser->TETUserLastName = $user->lastname;
+            $newuser->TETUserEmail = $user->email;
+            $newuser->TETUserFirstName = $user->firstname;
+            $newuser->TETUserPhone = $user->phone1;
+
+            return $newuser;
+        }, $moodlearray);
+    }
+
+    public static function create_tet_user($id) {
+        global $DB;
+
+        $user = $DB->get_record("user", array("id" => $id));
+        $user = static::moodle_users_to_tet_users([$user])[0];
+
+        $tetuserresponse = tomaetest_connection::post_request("user/getByExternalID/view", ["ExternalID" => $user->TETExternalID]);
+
+        if (!$tetuserresponse["success"]) {
+            $sendingobject = [
+                "UserName" => $user->UserName,
+                "Attributes" => $user
+            ];
+            unset($sendingobject["Attributes"]->UserName);
+            unset($sendingobject["Attributes"]->EtestRole);
+            $tetuserresponse = tomaetest_connection::post_request("user/insert", $sendingobject);
+            if (!$tetuserresponse['success']) {
+                return "Duplicate ExternalID/UserName - " . $sendingobject["UserName"] . " Please check for duplicate data.";
+            }
+            $tetuserid = $tetuserresponse["data"];
+        } else {
+            $tetuserid = $tetuserresponse["data"]["Entity"];
+        }
+        $rolename = $user->EtestRole;
+        $tetroleresponse = tomaetest_connection::post_request("role/getByName/view", ["Name" => $rolename]);
+
+        if (!$tetroleresponse["success"]) {
+            return "Could not find role in TET.";
+        }
+        $roleid = $tetroleresponse["data"]["Entity"]["ID"];
+        $responseconnect = tomaetest_connection::post_request("user/edit?ID=" . $tetuserid, [
+            "ID" => $tetuserid,
+            "Attributes" => new stdClass(),
+            "Roles" => ["Delete" => [], "Insert" => [$roleid]]
+        ]);
+        return true;
+    }
+
+
+
+
+
+    
+
+    // TODORON: move all these to the new plugin
     public static function get_coursemodule($cmid) {
         global $DB;
         $record = $DB->get_record('course_modules', array('id' => $cmid));
         return $record;
     }
-
     public static function get_course($cmid) {
         global $DB;
         $record = $DB->get_record_sql(
@@ -94,21 +147,10 @@ class tomax_utils
         );
         return $record;
     }
-    
-    public static function get_teacher_id($userid) {
-        global $DB;
-        $user = $DB->get_record('user', array('id' => $userid));
-        return self::get_external_id_for_teacher($user);
-    }
-
-
     public static function get_course_information($courseid) {
         global $DB;
         return $DB->get_record('course', array('id' => $courseid));
     }
-
-
-    // TODORON: move all these to the new plugin
     public static function get_activity_by_exam_code($code) {
         global $DB;
         $record = $DB->get_record_sql(
@@ -160,39 +202,6 @@ class tomax_utils
 
         return $students;
     }
-
-
-
-
-    public static function moodle_participants_to_tet_participants($moodlearray) {
-        return
-            array_map(function ($student) {
-                $newstudent = new stdClass();
-                $newstudent->TETParticipantFirstName = $student->firstname;
-                $newstudent->TETParticipantLastName = $student->lastname;
-                $newstudent->TETParticipantPhone = $student->phone1;
-                $newstudent->TETParticipantIdentity = quizaccess_tomaetest_utils::get_external_id_for_participant($student);
-                return $newstudent;
-            }, $moodlearray);
-    }
-
-    public static function moodle_users_to_tet_users($moodlearray) {
-        return array_map(function ($user) {
-            $newuser = new stdClass();
-
-            $newuser->EtestRole = "lecturer";
-            // TODORON: change to role based on role in moodle
-            $newuser->TETExternalID = static::get_external_id_for_teacher($user);
-            $newuser->UserName = static::get_external_id_for_teacher($user);
-            $newuser->TETUserLastName = $user->lastname;
-            $newuser->TETUserEmail = $user->email;
-            $newuser->TETUserFirstName = $user->firstname;
-            $newuser->TETUserPhone = $user->phone1;
-
-            return $newuser;
-        }, $moodlearray);
-    }
-
     public static function get_moodle_teachers($quizid = null, $userid = null) {
         global $DB;
         if ($quizid === null) {
@@ -214,12 +223,10 @@ class tomax_utils
 
         return $teachers;
     }
-
     public static function get_moodle_teachers_by_course($courseid) {
         $context = context_course::instance($courseid);
         return get_users_by_capability($context, "mod/quizaccess_tomaetest:viewtomaetestmonitor");
     }
-
     public static function get_moodle_allowed_integrity_management($userid = null) {
         global $DB;
         $systemcontext = context_system::instance();
@@ -230,42 +237,6 @@ class tomax_utils
         return $teachers;
     }
 
-    public static function create_system_user($id) {
-        global $DB;
-
-        $user = $DB->get_record("user", array("id" => $id));
-        $user = static::moodle_users_to_tet_users([$user])[0];
-
-        $tetuserresponse = tomaetest_connection::post_request("user/getByExternalID/view", ["ExternalID" => $user->TETExternalID]);
-
-        if (!$tetuserresponse["success"]) {
-            $sendingobject = [
-                "UserName" => $user->UserName,
-                "Attributes" => $user
-            ];
-            unset($sendingobject["Attributes"]->UserName);
-            unset($sendingobject["Attributes"]->Role);
-            $tetuserresponse = tomaetest_connection::post_request("user/insert", $sendingobject);
-            if (!$tetuserresponse['success']) {
-                return "Duplicate ExternalID/UserName - " . $sendingobject["UserName"] . " Please check for duplicate data.";
-            }
-            $tetuserid = $tetuserresponse["data"];
-        } else {
-            $tetuserid = $tetuserresponse["data"]["Entity"];
-        }
-        $tetroleresponse = tomaetest_connection::post_request("role/getByName/view", ["Name" => "lecturer"]);
-            // TODORON: change to role based on role in moodle
-
-        // Need to sync at least one exam to create ROLE_MOODLE...
-        if (!$tetroleresponse["success"]) {
-            return "Please try and sync one quiz with a user attached to it first.";
-        }
-        $roleid = $tetroleresponse["data"]["Entity"]["ID"];
-        $responseconnect = tomaetest_connection::post_request("user/edit?ID=" . $tetuserid, [
-            "ID" => $tetuserid,
-            "Attributes" => new stdClass(),
-            "Roles" => ["Delete" => [], "Insert" => [$roleid]]
-        ]);
-        return true;
-    }
+    
 }
+tomax_utils::$config = get_config('local_tomax');

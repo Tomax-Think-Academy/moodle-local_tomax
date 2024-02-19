@@ -29,6 +29,93 @@ class tomaetest_connection
 {
     public static $config;
 
+    private static function check_config() {
+        $config = static::$config;
+        if (empty($config->domain) || empty($config->etestapikey) || empty($config->etestuserid)) {
+            static::$config = get_config('local_tomax');
+            $config = static::$config;
+            if (empty($config->domain) || empty($config->etestapikey) || empty($config->etestuserid)) {
+                $missingparams = [];
+                foreach (["domain", "etestapikey", "etestuserid"] as $key => $value) {
+                    if (empty($config->$value)) {
+                        array_push($missingparams, $value);
+                    }
+                }
+                return ["success" => false, "missingparams" => $missingparams];
+            }
+        }
+        return null;
+    }
+
+    public static function post_request($method, $postdata, $parameters = []) {
+        $configcheck = self::check_config();
+        if (isset($configcheck)) {
+            return $configcheck;
+        }
+        $config = static::$config;
+        etest_log("================== post $method to :$config->domain ====================");
+        $url = "https://$config->domain.tomaetest.com/TomaETest/api/dashboard/WS/$method$parameters";
+
+        etest_log("url : " . $url);
+        etest_log("postdata : " . json_encode($postdata));
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode($postdata),
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_HTTPHEADER => [
+                "cache-control: no-cache",
+                "x-apikey: " . $config->apikey,
+                "x-userid: " . $config->etestuserid
+            ]
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+
+        etest_log("response : " . $response);
+
+        etest_log("================== end post $method to $config->domain ====================");
+
+        return json_decode($response, true);
+    }
+
+    public static function get_exams() {
+        $result = static::post_request(
+            "exam/list",
+            []
+        );
+        return $result;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public static function sso($quizid, $userid, $parid = null) {
         $record = quizaccess_tomaetest_utils::get_etest_quiz($quizid);
@@ -239,55 +326,6 @@ class tomaetest_connection
         return static::post_request("exam/tsimport/insert", $data);
     }
 
-    public static function post_request($method, $postdata, $parameters = "") {
-        $config = static::$config;
-        if (empty($config->domain) || empty($config->apikey) || empty($config->userid)) {
-            static::$config = get_config('quizaccess_tomaetest');
-            $config = static::$config;
-            if (empty($config->domain) || empty($config->apikey) || empty($config->userid)) {
-                $missingparams = [];
-                foreach (["domain", "apikey", "userid"] as $key => $value) {
-                    if (empty($config->$value)) {
-                        array_push($missingparams, $value);
-                    }
-                }
-                return ["success" => false, "missingparams" => $missingparams];
-            }
-        }
-        etest_log("================== post $method to :$config->domain ====================");
-        $url = "https://$config->domain.tomaetest.com/TomaETest/api/dashboard/WS/$method$parameters";
-
-        etest_log("url : " . $url);
-        etest_log("postdata : " . json_encode($postdata));
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => json_encode($postdata),
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_HTTPHEADER => [
-                "cache-control: no-cache",
-                "x-apikey: " . $config->apikey,
-                "x-userid: " . $config->userid
-            ]
-        ));
-
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        curl_close($curl);
-
-        etest_log("response : " . $response);
-
-        etest_log("================== end post $method to $config->domain ====================");
-
-        return json_decode($response, true);
-    }
+    
 }
-tomaetest_connection::$config = get_config('quizaccess_tomaetest');
+tomaetest_connection::$config = get_config('local_tomax');
