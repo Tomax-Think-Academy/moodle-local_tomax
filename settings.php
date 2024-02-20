@@ -110,6 +110,6 @@ if ($hassiteconfig) {
         "tet_connection_check",
         // TODORON: change to get_string and add to lang file
         "TomaETest Connection Check",
-        "Click here to check your connection (save the changes before checking): <button type='button' onclick='window.open(\"$checkconnection\", \"_self\")'>Check Connection</button>"
+        "Click here to check your TomaETest connection (save the changes before checking): <button type='button' onclick='window.open(\"$checkconnection\", \"_self\")'>Check Connection</button>"
     ));
 }

@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_tomax';
 $plugin->release = '0.1.0';
-$plugin->version = 2024021900;
+$plugin->version = 2024022000;
 $plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_ALPHA;

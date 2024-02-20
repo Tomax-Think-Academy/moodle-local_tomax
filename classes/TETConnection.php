@@ -57,15 +57,15 @@ class tomaetest_connection
         // TODORON: handle bad params
     }
 
-    public static function post_request($endpoint, $payload, $parameters = []) {
-        return self::request("POST", $endpoint, $parameters, $payload);
+    public static function tet_post_request($endpoint, $payload, $parameters = []) {
+        return self::tet_request("POST", $endpoint, $parameters, $payload);
     }
 
-    public static function get_request($endpoint, $parameters = []) {
-        return self::request("GET", $endpoint, $parameters, []);
+    public static function tet_get_request($endpoint, $parameters = []) {
+        return self::tet_request("GET", $endpoint, $parameters, []);
     }
 
-    private static function request($method, $endpoint, $parameters, $payload) {
+    private static function tet_request($method, $endpoint, $parameters, $payload) {
         $configcheck = self::check_config();
         if (isset($configcheck)) {
             return $configcheck;
@@ -118,7 +118,7 @@ class tomaetest_connection
     }
 
     public static function get_exams() {
-        $result = self::get_request(
+        $result = self::tet_get_request(
             "exam/list",
             []
         );

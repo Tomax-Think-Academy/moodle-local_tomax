@@ -93,7 +93,7 @@ class tomax_utils
         $user = $DB->get_record("user", array("id" => $id));
         $user = static::moodle_users_to_tet_users([$user])[0];
 
-        $tetuserresponse = tomaetest_connection::post_request("user/getByExternalID/view", ["ExternalID" => $user->TETExternalID]);
+        $tetuserresponse = tomaetest_connection::tet_post_request("user/getByExternalID/view", ["ExternalID" => $user->TETExternalID]);
 
         if (!$tetuserresponse["success"]) {
             $sendingobject = [
@@ -102,7 +102,7 @@ class tomax_utils
             ];
             unset($sendingobject["Attributes"]->UserName);
             unset($sendingobject["Attributes"]->EtestRole);
-            $tetuserresponse = tomaetest_connection::post_request("user/insert", $sendingobject);
+            $tetuserresponse = tomaetest_connection::tet_post_request("user/insert", $sendingobject);
             if (!$tetuserresponse['success']) {
                 return "Duplicate ExternalID/UserName - " . $sendingobject["UserName"] . " Please check for duplicate data.";
             }
@@ -111,13 +111,13 @@ class tomax_utils
             $tetuserid = $tetuserresponse["data"]["Entity"];
         }
         $rolename = $user->EtestRole;
-        $tetroleresponse = tomaetest_connection::post_request("role/getByName/view", ["Name" => $rolename]);
+        $tetroleresponse = tomaetest_connection::tet_post_request("role/getByName/view", ["Name" => $rolename]);
 
         if (!$tetroleresponse["success"]) {
             return "Could not find role in TET.";
         }
         $roleid = $tetroleresponse["data"]["Entity"]["ID"];
-        $responseconnect = tomaetest_connection::post_request("user/edit?ID=" . $tetuserid, [
+        $responseconnect = tomaetest_connection::tet_post_request("user/edit?ID=" . $tetuserid, [
             "ID" => $tetuserid,
             "Attributes" => new stdClass(),
             "Roles" => ["Delete" => [], "Insert" => [$roleid]]
@@ -129,7 +129,7 @@ class tomax_utils
 
 
 
-    
+
 
     // TODORON: move all these to the new plugin
     public static function get_coursemodule($cmid) {
