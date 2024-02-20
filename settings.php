@@ -64,22 +64,6 @@ if ($hassiteconfig) {
         ''
     ));
 
-    $settings->add(new admin_setting_requiredconfigpasswordunmask(
-        'local_tomax/etestuserid',
-        // TODORON: change to get_string and add to lang file
-        "TomaETest UserID",
-        "",
-        ''
-    ));
-
-    $settings->add(new admin_setting_requiredconfigpasswordunmask(
-        'local_tomax/etestapikey',
-        // TODORON: change to get_string and add to lang file
-        "TomaETest APIKey",
-        "",
-        ''
-    ));
-
     $settings->add(new admin_setting_configselect(
         'local_tomax/tomax_teacherID',
         // TODORON: change to get_string and add to lang file
@@ -98,9 +82,32 @@ if ($hassiteconfig) {
         $identifierarraystudent
     ));
 
+    $settings->add(new admin_setting_heading(
+        "local_tomax_tet_settings",
+        // TODORON: change to get_string and add to lang file
+        "TomaETest System Configuration",
+        "Define the TomaETest system configurations."
+    ));
+
+    $settings->add(new admin_setting_requiredconfigpasswordunmask(
+        'local_tomax/etestuserid',
+        // TODORON: change to get_string and add to lang file
+        "TomaETest UserID",
+        "",
+        ''
+    ));
+
+    $settings->add(new admin_setting_requiredconfigpasswordunmask(
+        'local_tomax/etestapikey',
+        // TODORON: change to get_string and add to lang file
+        "TomaETest APIKey",
+        "",
+        ''
+    ));
+
     $checkconnection = new moodle_url('/local/tomax/misc/checkTETConnection.php');
     $settings->add(new admin_setting_heading(
-        "quizaccess_connection_check",
+        "tet_connection_check",
         // TODORON: change to get_string and add to lang file
         "TomaETest Connection Check",
         "Click here to check your connection (save the changes before checking): <button type='button' onclick='window.open(\"$checkconnection\", \"_self\")'>Check Connection</button>"

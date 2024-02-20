@@ -77,7 +77,7 @@ class tomaetest_connection
 
         etest_log("url: " . $url);
         
-        $curl = curl_init();
+        $ch = curl_init();
         
         $options = array(
             CURLOPT_URL => $url,
@@ -101,11 +101,11 @@ class tomaetest_connection
             ]);
         }
 
-        curl_setopt_array($curl, $options);
+        curl_setopt_array($ch, $options);
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        curl_close($curl);
+        $response = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
 
         etest_log("================== end $method $endpoint to $config->domain ====================");
 
