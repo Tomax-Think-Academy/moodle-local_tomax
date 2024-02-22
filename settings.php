@@ -112,4 +112,32 @@ if ($hassiteconfig) {
         "TomaETest Connection Check",
         "Click here to check your TomaETest connection (save the changes before checking): <button type='button' onclick='window.open(\"$checkconnection\", \"_self\")'>Check Connection</button>"
     ));
+
+    $settings->add(new admin_setting_heading(
+        "local_tomax_proxy_settings",
+        // TODORON: change to get_string and add to lang file
+        "Proxy Settings",
+        ""
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'local_tomax/useProxy',
+        // TODORON: change to get_string and add to lang file
+        "Use Proxy",
+        "",
+        '0'
+    ));
+    $settings->add(new admin_setting_configtext(
+        'local_tomax/proxyURL',
+        // TODORON: change to get_string and add to lang file
+        "Proxy URL",
+        "",
+        ''
+    ));
+    $settings->add(new admin_setting_configtext(
+        'local_tomax/proxyPort',
+        // TODORON: change to get_string and add to lang file
+        "Proxy Port",
+        "",
+        ''
+    ));
 }

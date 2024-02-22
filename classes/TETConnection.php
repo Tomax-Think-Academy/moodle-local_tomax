@@ -93,12 +93,24 @@ class tomaetest_connection
                 "x-userid: " . $config->etestuserid
             ]
         );
+
         if ($method == "POST") {
             etest_log("payload: " . json_encode($payload));
-            array_push($options, [
-                CURLOPT_CUSTOMREQUEST => "POST",
-                CURLOPT_POSTFIELDS => json_encode($payload)
-            ]);
+            $options[CURLOPT_CUSTOMREQUEST] = "POST";
+            $options[CURLOPT_POSTFIELDS] = json_encode($payload);
+        }
+
+        if (isset($config->useProxy) && $config->useProxy === "1") {
+            if (isset($config->proxyURL) && !empty($config->proxyURL)) {
+                $proxy = $config->proxyURL;
+                if (isset($config->proxyPort) && !empty($config->proxyPort)) {
+                    $proxy = $proxy . ':' . $config->proxyPort;
+                }
+                $options[CURLOPT_PROXY] = $proxy;
+            }
+            else {
+                // TODORON: maybe throw error here?
+            }
         }
 
         curl_setopt_array($ch, $options);
@@ -118,10 +130,7 @@ class tomaetest_connection
     }
 
     public static function get_exams() {
-        $result = self::tet_get_request(
-            "exam/list",
-            []
-        );
+        $result = self::tet_get_request("exam/list");
         return $result;
     }
 
