@@ -14,16 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * version.php - version information.
  *
  * @package     local_tomax
- * @category    upgrade
  * @copyright   2024 Tomax ltd <roy@tomax.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- use local_tomax\Constants;
+use local_tomax\Constants;
 
+/**
+ * Class tomax_utils
+ *
+ * @package local_tomax
+ */
 class tomax_utils
 {
     public static $config;
@@ -32,7 +35,7 @@ class tomax_utils
         $output = null;
         if (self::$config->tomax_teacherID == Constants::IDENTIFIER_BY_EMAIL) {
             $output = $user->email;
-        } else if (self::$config->tomaxt_teacherID == Constants::IDENTIFIER_BY_ID) {
+        } else if (self::$config->tomax_teacherID == Constants::IDENTIFIER_BY_ID) {
             $output = $user->idnumber;
         }
         return $output;

@@ -24,6 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 require_login();
+require_once(__DIR__.'/Utils.php');
 
 class tomaetest_connection
 {
@@ -73,7 +74,8 @@ class tomaetest_connection
         $config = static::$config;
         $queryparams = self::convert_query_params($parameters);
         etest_log("================== $method $endpoint to :$config->domain ====================");
-        $url = "https://$config->domain.tomaetest.com/TomaETest/api/dashboard/WS/$endpoint$queryparams";
+        // TODORON: change back to TomaETest (without Ron)
+        $url = "https://$config->domain.tomaetest.com/TomaETestRon/api/dashboard/WS/$endpoint$queryparams";
 
         etest_log("url: " . $url);
         
@@ -134,44 +136,56 @@ class tomaetest_connection
         return $result;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public static function sso($quizid, $userid, $parid = null) {
-        $record = quizaccess_tomaetest_utils::get_etest_quiz($quizid);
-        if (!$record) {
-            return false;
+    public static function sso($userid, $examid=null, $courseid=null, $location=null) {
+        $externalid = tomax_utils::get_teacher_id($userid);
+        $data["userExternalID"] = $externalid;
+        if ($location == "activity-settings" && isset($examid) && isset($courseid)) {
+            $externallocation = 'management/courses-lecturer/' . $courseid . "/" . "settings/" . $examid;
+            $data["externalLocation"] = $externallocation;
         }
-        $id = $record->extradata["TETID"];
-        $externalid = quizaccess_tomaetest_utils::get_teacher_id($userid);
-        $examid = $record->extradata["TETExternalID"];
-        $data = ["userExternalID" => $externalid, "examExternalID" => $examid];
-        if ($parid !== null) {
-            $data["externalLocation"] = "exams/$id/proctoring/$parid";
-        }
-        $result = static::post_request("auth/login/SafeGenerateToken", $data);
+        $result = static::tet_post_request("auth/login/SafeGenerateToken", $data);
         if ($result["success"] == true) {
             return $result["data"]["url"];
         }
-        return false;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // public static function sso($quizid, $userid, $parid = null) {
+    //     $record = quizaccess_tomaetest_utils::get_etest_quiz($quizid);
+    //     if (!$record) {
+    //         return false;
+    //     }
+    //     $id = $record->extradata["TETID"];
+    //     $externalid = quizaccess_tomaetest_utils::get_teacher_id($userid);
+    //     $examid = $record->extradata["TETExternalID"];
+    //     $data = ["userExternalID" => $externalid, "examExternalID" => $examid];
+    //     if ($parid !== null) {
+    //         $data["externalLocation"] = "exams/$id/proctoring/$parid";
+    //     }
+    //     $result = static::post_request("auth/login/SafeGenerateToken", $data);
+    //     if ($result["success"] == true) {
+    //         return $result["data"]["url"];
+    //     }
+    //     return false;
+    // }
 
     public static function sso_integrity_management($userid) {
         $externalid = quizaccess_tomaetest_utils::get_teacher_id($userid);
