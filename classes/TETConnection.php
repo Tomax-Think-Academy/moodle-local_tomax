@@ -143,6 +143,10 @@ class tomaetest_connection
             $externallocation = 'management/courses-lecturer/' . $courseid . "/" . "settings/" . $examid;
             $data["externalLocation"] = $externallocation;
         }
+        if ($location == "monitor" && isset($examid)) {
+            $externallocation = "exams/" . $examid . "/home";
+            $data["externalLocation"] = $externallocation;
+        }
         $result = static::tet_post_request("auth/login/SafeGenerateToken", $data);
         if ($result["success"] == true) {
             return $result["data"]["url"];
