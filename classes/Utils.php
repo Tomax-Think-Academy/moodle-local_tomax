@@ -61,72 +61,7 @@ class tomax_utils
         return self::get_external_id_for_teacher($user);
     }
     
-    public static function moodle_participants_to_tet_participants($moodlearray) {
-        return
-            array_map(function ($student) {
-                $newstudent = new stdClass();
-                $newstudent->TETParticipantFirstName = $student->firstname;
-                $newstudent->TETParticipantLastName = $student->lastname;
-                $newstudent->TETParticipantPhone = $student->phone1;
-                $newstudent->TETParticipantIdentity = self::get_external_id_for_participant($student);
-                return $newstudent;
-            }, $moodlearray);
-    }
-
-    public static function moodle_users_to_tet_users($moodlearray) {
-        return array_map(function ($user) {
-            $newuser = new stdClass();
-
-            $newuser->EtestRole = "ROLE_MOODLE";
-            // TODORON: change to role based on role in moodle
-            $newuser->TETExternalID = static::get_external_id_for_teacher($user);
-            $newuser->UserName = static::get_external_id_for_teacher($user);
-            $newuser->TETUserLastName = $user->lastname;
-            $newuser->TETUserEmail = $user->email;
-            $newuser->TETUserFirstName = $user->firstname;
-            $newuser->TETUserPhone = $user->phone1;
-
-            return $newuser;
-        }, $moodlearray);
-    }
-
-    public static function create_tet_user($id) {
-        global $DB;
-
-        $user = $DB->get_record("user", array("id" => $id));
-        $user = static::moodle_users_to_tet_users([$user])[0];
-
-        $tetuserresponse = tomaetest_connection::tet_post_request("user/getByExternalID/view", ["ExternalID" => $user->TETExternalID]);
-
-        if (!$tetuserresponse["success"]) {
-            $sendingobject = [
-                "UserName" => $user->UserName,
-                "Attributes" => $user
-            ];
-            unset($sendingobject["Attributes"]->UserName);
-            unset($sendingobject["Attributes"]->EtestRole);
-            $tetuserresponse = tomaetest_connection::tet_post_request("user/insert", $sendingobject);
-            if (!$tetuserresponse['success']) {
-                return "Duplicate ExternalID/UserName - " . $sendingobject["UserName"] . " Please check for duplicate data.";
-            }
-            $tetuserid = $tetuserresponse["data"];
-        } else {
-            $tetuserid = $tetuserresponse["data"]["Entity"];
-        }
-        $rolename = $user->EtestRole;
-        $tetroleresponse = tomaetest_connection::tet_post_request("role/getByName/view", ["Name" => $rolename]);
-
-        if (!$tetroleresponse["success"]) {
-            return "Could not find role in TET.";
-        }
-        $roleid = $tetroleresponse["data"]["Entity"]["ID"];
-        $responseconnect = tomaetest_connection::tet_post_request("user/edit?ID=" . $tetuserid, [
-            "ID" => $tetuserid,
-            "Attributes" => new stdClass(),
-            "Roles" => ["Delete" => [], "Insert" => [$roleid]]
-        ]);
-        return true;
-    }
+    
 
 
 
