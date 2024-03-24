@@ -74,8 +74,7 @@ class tomaetest_connection
         $config = static::$config;
         $queryparams = self::convert_query_params($parameters);
         etest_log("================== $method $endpoint to :$config->domain ====================");
-        // TODORON: change back to TomaETest (without Ron)
-        $url = "https://$config->domain.tomaetest.com/TomaETestRon/api/dashboard/WS/$endpoint$queryparams";
+        $url = "https://$config->domain.tomaetest.com/TomaETest/api/dashboard/WS/$endpoint$queryparams";
 
         etest_log("url: " . $url);
         
