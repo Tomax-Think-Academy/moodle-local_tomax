@@ -23,7 +23,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_login();
+// require_login();
 require_once(__DIR__.'/Utils.php');
 
 class tomaetest_connection
