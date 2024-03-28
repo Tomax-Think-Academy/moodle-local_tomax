@@ -34,3 +34,4 @@ $string['identifier_by_username'] = 'Username';
 $string['well_connected'] = "Your system is well connected!";
 $string['connection_auth_error'] = "Please check your APIKey and UserID";
 $string['no_TET_open_connection'] = "It seems you do not have an open connection to TomaETest";
+$string['no_TG_open_connection'] = "It seems you do not have an open connection to TomaGrade";

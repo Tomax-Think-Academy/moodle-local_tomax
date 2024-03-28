@@ -114,6 +114,37 @@ if ($hassiteconfig) {
     ));
 
     $settings->add(new admin_setting_heading(
+        "local_tomax_tg_settings",
+        // TODORON: change to get_string and add to lang file
+        "TomaGrade System Configuration",
+        "Define the TomaGrade system configurations."
+    ));
+
+    $settings->add(new admin_settings_requiredconfigpasswordunmask(
+        'local_tomax/tguserid',
+        // TODORON: change to get_string and add to lang file
+        "TomaGrade UserID",
+        "",
+        ''
+    ));
+
+    $settings->add(new admin_settings_requiredconfigpasswordunmask(
+        'local_tomax/tgapikey',
+        // TODORON: change to get_string and add to lang file
+        "TomaGrade APIKey",
+        "",
+        ''
+    ));
+
+    $checkconnection = new moodle_url('/local/tomax/misc/checkTGConnection.php');
+    $settings->add(new admin_setting_heading(
+        "tg_connection_check",
+        // TODORON: change to get_string and add to lang file
+        "TomaGrade Connection Check",
+        "Click here to check your TomaGrade connection (save the changes before checking): <button type='button' onclick='window.open(\"$checkconnection\", \"_self\")'>Check Connection</button>"
+    ));
+
+    $settings->add(new admin_setting_heading(
         "local_tomax_proxy_settings",
         // TODORON: change to get_string and add to lang file
         "Proxy Settings",

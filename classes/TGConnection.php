@@ -26,18 +26,18 @@ defined('MOODLE_INTERNAL') || die();
 // require_login();
 require_once(__DIR__.'/Utils.php');
 
-class tomaetest_connection
+class tomagrade_connection
 {
     public static $config;
 
     private static function check_config() {
         $config = static::$config;
-        if (empty($config->domain) || empty($config->etestapikey) || empty($config->etestuserid)) {
+        if (empty($config->domain) || empty($config->tgapikey) || empty($config->tguserid)) {
             static::$config = get_config('local_tomax');
             $config = static::$config;
-            if (empty($config->domain) || empty($config->etestapikey) || empty($config->etestuserid)) {
+            if (empty($config->domain) || empty($config->tgapikey) || empty($config->tguserid)) {
                 $missingparams = [];
-                foreach (["domain", "etestapikey", "etestuserid"] as $key => $value) {
+                foreach (["domain", "tgapikey", "tguserid"] as $key => $value) {
                     if (empty($config->$value)) {
                         array_push($missingparams, $value);
                     }
@@ -58,25 +58,25 @@ class tomaetest_connection
         // TODORON: handle bad params
     }
 
-    public static function tet_post_request($endpoint, $payload, $parameters = []) {
-        return self::tet_request("POST", $endpoint, $parameters, $payload);
+    public static function tg_post_request($endpoint, $payload, $parameters = []) {
+        return self::tg_request("POST", $endpoint, $parameters, $payload);
     }
 
-    public static function tet_get_request($endpoint, $parameters = []) {
-        return self::tet_request("GET", $endpoint, $parameters, []);
+    public static function tg_get_request($endpoint, $parameters = []) {
+        return self::tg_request("GET", $endpoint, $parameters, []);
     }
 
-    private static function tet_request($method, $endpoint, $parameters, $payload) {
+    private static function tg_request($method, $endpoint, $parameters, $payload) {
         $configcheck = self::check_config();
         if (isset($configcheck)) {
             return $configcheck;
         }
         $config = static::$config;
         $queryparams = self::convert_query_params($parameters);
-        etest_log("================== $method $endpoint to :$config->domain ====================");
-        $url = "https://$config->domain.tomaetest.com/TomaETest/api/dashboard/WS/$endpoint$queryparams";
+        tg_log("================== $method $endpoint to :$config->domain ====================");
+        $url = "https://$config->domain.tomagrade.com/TomaGrade/Server/php/WS.php/$endpoint$queryparams";
 
-        etest_log("url: " . $url);
+        tg_log("url: " . $url);
         
         $ch = curl_init();
         
@@ -90,13 +90,13 @@ class tomaetest_connection
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_HTTPHEADER => [
                 "cache-control: no-cache",
-                "x-apikey: " . $config->etestapikey,
-                "x-userid: " . $config->etestuserid
+                "x-apikey: " . $config->tgapikey,
+                "x-userid: " . $config->tguserid
             ]
         );
 
         if ($method == "POST") {
-            etest_log("payload: " . json_encode($payload));
+            tg_log("payload: " . json_encode($payload));
             $options[CURLOPT_CUSTOMREQUEST] = "POST";
             $options[CURLOPT_POSTFIELDS] = json_encode($payload);
         }
@@ -120,40 +120,23 @@ class tomaetest_connection
         $err = curl_error($ch);
         curl_close($ch);
 
-        etest_log("================== end $method $endpoint to $config->domain ====================");
+        tg_log("================== end $method $endpoint to $config->domain ====================");
 
         if ($response) {
-            etest_log("response: " . $response);
+            tg_log("response: " . $response);
             return json_decode($response, true);
         }
-        etest_log("err: " . $err);
+        tg_log("err: " . $err);
         return ["success" => false, "message" => $err];
     }
 
-    public static function get_exams() {
-        $result = self::tet_get_request("exam/list");
-        return $result;
-    }
-
-    public static function sso($userid, $examid=null, $courseid=null, $location=null) {
-        $externalid = tomax_utils::get_teacher_id($userid);
-        $data["userExternalID"] = $externalid;
-        if ($location == "activity-settings" && isset($examid) && isset($courseid)) {
-            $externallocation = 'management/courses-lecturer/' . $courseid . "/" . "settings/" . $examid;
-            $data["externalLocation"] = $externallocation;
-        }
-        if ($location == "monitor" && isset($examid)) {
-            $externallocation = "exams/" . $examid . "/home";
-            $data["externalLocation"] = $externallocation;
-        }
-        $result = static::tet_post_request("auth/login/SafeGenerateToken", $data);
-        if ($result["success"] == true) {
-            return $result["data"]["url"];
-        }
+    public function get_courses() {
+        $response = $this->tg_get_request("GetCourses");
+        return $response;
     }
     
 }
-tomaetest_connection::$config = get_config('local_tomax');
+tomagrade_connection::$config = get_config('local_tomax');
 
-function etest_log($item) {
+function tg_log($item) {
 }
