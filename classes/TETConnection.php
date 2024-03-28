@@ -73,10 +73,10 @@ class tomaetest_connection
         }
         $config = static::$config;
         $queryparams = self::convert_query_params($parameters);
-        etest_log("================== $method $endpoint to :$config->domain ====================");
+        tet_log("================== $method $endpoint to :$config->domain ====================");
         $url = "https://$config->domain.tomaetest.com/TomaETest/api/dashboard/WS/$endpoint$queryparams";
 
-        etest_log("url: " . $url);
+        tet_log("url: " . $url);
         
         $ch = curl_init();
         
@@ -96,7 +96,7 @@ class tomaetest_connection
         );
 
         if ($method == "POST") {
-            etest_log("payload: " . json_encode($payload));
+            tet_log("payload: " . json_encode($payload));
             $options[CURLOPT_CUSTOMREQUEST] = "POST";
             $options[CURLOPT_POSTFIELDS] = json_encode($payload);
         }
@@ -120,13 +120,13 @@ class tomaetest_connection
         $err = curl_error($ch);
         curl_close($ch);
 
-        etest_log("================== end $method $endpoint to $config->domain ====================");
+        tet_log("================== end $method $endpoint to $config->domain ====================");
 
         if ($response) {
-            etest_log("response: " . $response);
+            tet_log("response: " . $response);
             return json_decode($response, true);
         }
-        etest_log("err: " . $err);
+        tet_log("err: " . $err);
         return ["success" => false, "message" => $err];
     }
 
@@ -155,5 +155,5 @@ class tomaetest_connection
 }
 tomaetest_connection::$config = get_config('local_tomax');
 
-function etest_log($item) {
+function tet_log($item) {
 }
