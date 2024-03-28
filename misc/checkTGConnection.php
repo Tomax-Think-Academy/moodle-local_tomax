@@ -35,10 +35,10 @@ require_login();
 $connection = new tomagrade_connection;
 $res = $connection->get_courses();
 if (isset($res)) {
-    if ($res["success"] == true) {
+    if ($res["IsTokenActive"] == true) {
         write(get_string('well_connected' , 'local_tomax'));
-    } else if (isset($res["message"])) {
-        write($res["message"]);
+    // } else if (isset($res["Message"])) {
+    //     write($res["Message"]);
     } else {
         write(get_string('connection_auth_error' , 'local_tomax'));
     }

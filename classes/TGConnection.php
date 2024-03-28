@@ -74,7 +74,7 @@ class tomagrade_connection
         $config = static::$config;
         $queryparams = self::convert_query_params($parameters);
         tg_log("================== $method $endpoint to :$config->domain ====================");
-        $url = "https://$config->domain.tomagrade.com/TomaGrade/Server/php/WS.php/$endpoint$queryparams";
+        $url = "https://$config->domain.tomagrade.com/TomaGrade/Server/php/WS.php/$endpoint/TOKEN/USER$queryparams";
 
         tg_log("url: " . $url);
         
