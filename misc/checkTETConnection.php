@@ -32,7 +32,7 @@ global $CFG;
 require_once($CFG->dirroot . "/local/tomax/classes/TETConnection.php");
 require_login();
 
-$connection = new tomaetest_connection;
+$connection = new tet_connection;
 $res = $connection->get_exams();
 if (isset($res)) {
     if ($res["success"] == true) {

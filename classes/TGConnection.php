@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 // require_login();
 require_once(__DIR__.'/Utils.php');
 
-class tomagrade_connection
+class tg_connection
 {
     public static $config;
 
@@ -136,7 +136,7 @@ class tomagrade_connection
     }
     
 }
-tomagrade_connection::$config = get_config('local_tomax');
+tg_connection::$config = get_config('local_tomax');
 
 function tg_log($item) {
 }

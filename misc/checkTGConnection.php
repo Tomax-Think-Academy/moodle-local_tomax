@@ -32,7 +32,7 @@ global $CFG;
 require_once($CFG->dirroot . "/local/tomax/classes/TGConnection.php");
 require_login();
 
-$connection = new tomagrade_connection;
+$connection = new tg_connection;
 $res = $connection->get_courses();
 if (isset($res)) {
     if ($res["IsTokenActive"] == true) {

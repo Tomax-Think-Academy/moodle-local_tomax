@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 // require_login();
 require_once(__DIR__.'/Utils.php');
 
-class tomaetest_connection
+class tet_connection
 {
     public static $config;
 
@@ -153,7 +153,7 @@ class tomaetest_connection
     }
     
 }
-tomaetest_connection::$config = get_config('local_tomax');
+tet_connection::$config = get_config('local_tomax');
 
 function tet_log($item) {
 }
