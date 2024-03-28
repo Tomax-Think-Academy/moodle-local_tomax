@@ -24,7 +24,7 @@
 
 require_once($CFG->libdir . '/adminlib.php');
 
-class admin_setting_requiredconfigpasswordunmask extends admin_setting_configpasswordunmask {
+class admin_settings_requiredconfigpasswordunmask extends admin_setting_configpasswordunmask {
 
     /**
      * Validate data before storage.

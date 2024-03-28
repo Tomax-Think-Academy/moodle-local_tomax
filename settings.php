@@ -23,7 +23,7 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot . "/local/tomax/classes/settings/admin_setting_requiredconfigpasswordunmask.php");
+require_once($CFG->dirroot . "/local/tomax/classes/settings/admin_settings_requiredconfigpasswordunmask.php");
 
 use local_tomax\Constants;
 
@@ -89,7 +89,7 @@ if ($hassiteconfig) {
         "Define the TomaETest system configurations."
     ));
 
-    $settings->add(new admin_setting_requiredconfigpasswordunmask(
+    $settings->add(new admin_settings_requiredconfigpasswordunmask(
         'local_tomax/etestuserid',
         // TODORON: change to get_string and add to lang file
         "TomaETest UserID",
@@ -97,7 +97,7 @@ if ($hassiteconfig) {
         ''
     ));
 
-    $settings->add(new admin_setting_requiredconfigpasswordunmask(
+    $settings->add(new admin_settings_requiredconfigpasswordunmask(
         'local_tomax/etestapikey',
         // TODORON: change to get_string and add to lang file
         "TomaETest APIKey",
