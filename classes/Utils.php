@@ -43,8 +43,6 @@ class tomax_utils
     }
 
     public static function get_external_id_for_participant($user) {
-
-        global $DB;
         if (self::$config->tomax_studentID == Constants::IDENTIFIER_BY_EMAIL) {
             $output = $user->email;
         } else if (self::$config->tomax_studentID == Constants::IDENTIFIER_BY_ID) {
@@ -57,8 +55,26 @@ class tomax_utils
 
     public static function get_teacher_id($userid) {
         global $DB;
+
         $user = $DB->get_record('user', array('id' => $userid));
         return self::get_external_id_for_teacher($user);
+    }
+
+    public static function get_participant_by_external_id($externalid) {
+        global $DB;
+
+        $column = "";
+        if (self::$config->tomax_studentID == Constants::IDENTIFIER_BY_EMAIL) {
+            $column = 'email';
+        } else if (self::$config->tomax_studentID == Constants::IDENTIFIER_BY_ID) {
+            $column = 'idnumber';
+        } else if (self::$config->tomax_studentID == Constants::IDENTIFIER_BY_USERNAME) {
+            $column = 'username';
+        } else {
+            return false;
+        }
+        $user = $DB->get_record('user', array($column => $externalid));
+        return $user;
     }
     
 }

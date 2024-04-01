@@ -53,7 +53,7 @@ class tg_connection
             return "";
         }
         if (is_array($params) || is_object($params)) {
-            return "?" . http_build_query($params);
+            return "/" . implode("/", $params);
         }
         // TODORON: handle bad params
     }
@@ -74,7 +74,7 @@ class tg_connection
         $config = static::$config;
         $queryparams = self::convert_query_params($parameters);
         tg_log("================== $method $endpoint to :$config->domain ====================");
-        $url = "https://$config->domain.tomagrade.com/TomaGrade/Server/php/WS.php/$endpoint/TOKEN/USER$queryparams";
+        $url = "https://$config->domain.tomagrade.com/TomaGrade/Server/php/WS.php/$endpoint/TOKEN/$config->tguserid$queryparams";
 
         tg_log("url: " . $url);
         
