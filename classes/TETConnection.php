@@ -139,7 +139,7 @@ class tet_connection
         $externalid = tomax_utils::get_teacher_id($userid);
         $data["userExternalID"] = $externalid;
         if ($location == "activity-settings" && isset($examid) && isset($courseid)) {
-            $externallocation = 'management/courses-lecturer/' . $courseid . "/" . "settings/" . $examid;
+            $externallocation = 'management/courses-lecturer/' . $courseid . "/" . "settings/0/" . $examid;
             $data["externalLocation"] = $externallocation;
         }
         if ($location == "monitor" && isset($examid)) {
