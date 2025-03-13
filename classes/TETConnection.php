@@ -138,8 +138,13 @@ class tet_connection
     public static function sso($userid, $examid=null, $courseid=null, $location=null) {
         $externalid = tomax_utils::get_teacher_id($userid);
         $data["userExternalID"] = $externalid;
-        if ($location == "activity-settings" && isset($examid) && isset($courseid)) {
-            $externallocation = 'management/courses-lecturer/' . $courseid . "/" . "settings/0/" . $examid;
+        if ($location == "assessment-studio" && isset($courseid)) {
+            if (isset($examid)) {
+                $externallocation = 'management/courses-lecturer/' . $courseid . "/" . "settings/0/" . $examid;
+            }
+            else {
+                $externallocation = 'management/courses-lecturer/' . $courseid;
+            }
             $data["externalLocation"] = $externallocation;
         }
         if ($location == "monitor" && isset($examid)) {
