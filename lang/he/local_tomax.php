@@ -15,17 +15,23 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Plugin strings are defined here.
  *
  * @package     local_tomax
+ * @category    string
  * @copyright   2024 Tomax ltd <roy@tomax.co.il>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_tomax';
-$plugin->release = '0.1.0';
-$plugin->version = 2025122400;
-$plugin->requires = 2022112800;
-$plugin->maturity = MATURITY_ALPHA;
+$string['pluginname'] = 'Tomax';
+
+$string['identifier_by_email'] = 'כתובת אימייל';
+$string['identifier_by_id'] = 'מספר זהות';
+$string['identifier_by_username'] = 'שם משתמש';
+
+$string['well_connected'] = "המערכת שלך מחוברת היטב!";
+$string['connection_auth_error'] = "אנא בדוק את APIKey שלך ו-UserID";
+$string['no_TET_open_connection'] = "נראה שאין לך חיבור פתוח ל- TomaETest";
+$string['no_TG_open_connection'] = "נראה שאין לך חיבור פתוח ל- TomaGrade";
