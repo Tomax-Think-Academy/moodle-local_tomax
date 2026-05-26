@@ -58,15 +58,15 @@ class tg_connection
         // TODORON: handle bad params
     }
 
-    public static function tg_post_request($endpoint, $payload, $parameters = []) {
-        return self::tg_request("POST", $endpoint, $parameters, $payload);
+    public static function tg_post_request($endpoint, $payload, $parameters = [], $raw = false) {
+        return self::tg_request("POST", $endpoint, $parameters, $payload, $raw);
     }
 
     public static function tg_get_request($endpoint, $parameters = []) {
         return self::tg_request("GET", $endpoint, $parameters, []);
     }
 
-    private static function tg_request($method, $endpoint, $parameters, $payload) {
+    private static function tg_request($method, $endpoint, $parameters, $payload, $raw = false) {
         $configcheck = self::check_config();
         if (isset($configcheck)) {
             return $configcheck;
@@ -122,9 +122,9 @@ class tg_connection
 
         tg_log("================== end $method $endpoint to $config->domain ====================");
 
-        if ($response) {
+        if ($response !== false) {
             tg_log("response: " . $response);
-            return json_decode($response, true);
+            return $raw ? $response : json_decode($response, true);
         }
         tg_log("err: " . $err);
         return ["success" => false, "message" => $err];
