@@ -122,7 +122,7 @@ class tet_connection
 
         tet_log("================== end $method $endpoint to $config->domain ====================");
 
-        if ($response) {
+        if ($response !== false) {
             tet_log("response: " . $response);
             return json_decode($response, true);
         }
