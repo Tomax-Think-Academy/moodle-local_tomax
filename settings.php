@@ -82,6 +82,56 @@ if ($hassiteconfig) {
         $identifierarraystudent
     ));
 
+    // --- Display Name Fields ---
+    $settings->add(new admin_setting_heading(
+        "local_tomax_displayname_settings",
+        get_string('displaynamefields_heading', 'local_tomax'),
+        get_string('displaynamefields_desc', 'local_tomax')
+    ));
+
+    $firstnameoptions = [
+        'firstname'          => get_string('field_firstname', 'local_tomax'),
+        'alternatename'      => get_string('field_alternatename', 'local_tomax'),
+        'middlename'         => get_string('field_middlename', 'local_tomax'),
+        'firstnamephonetic'  => get_string('field_firstnamephonetic', 'local_tomax'),
+    ];
+
+    $lastnameoptions = [
+        'lastname'           => get_string('field_lastname', 'local_tomax'),
+        'alternatename'      => get_string('field_alternatename', 'local_tomax'),
+        'lastnamephonetic'   => get_string('field_lastnamephonetic', 'local_tomax'),
+    ];
+
+    $coursenameoptions = [
+        'fullname'  => get_string('field_fullname', 'local_tomax'),
+        'shortname' => get_string('field_shortname', 'local_tomax'),
+        'idnumber'  => get_string('field_idnumber', 'local_tomax'),
+    ];
+
+    $settings->add(new admin_setting_configselect(
+        'local_tomax/user_firstname_field',
+        get_string('user_firstname_field', 'local_tomax'),
+        get_string('user_firstname_field_desc', 'local_tomax'),
+        'firstname',
+        $firstnameoptions
+    ));
+
+    $settings->add(new admin_setting_configselect(
+        'local_tomax/user_lastname_field',
+        get_string('user_lastname_field', 'local_tomax'),
+        get_string('user_lastname_field_desc', 'local_tomax'),
+        'lastname',
+        $lastnameoptions
+    ));
+
+    $settings->add(new admin_setting_configselect(
+        'local_tomax/course_name_field',
+        get_string('course_name_field', 'local_tomax'),
+        get_string('course_name_field_desc', 'local_tomax'),
+        'fullname',
+        $coursenameoptions
+    ));
+
     $settings->add(new admin_setting_heading(
         "local_tomax_tet_settings",
         // TODORON: change to get_string and add to lang file

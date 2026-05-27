@@ -76,6 +76,66 @@ class tomax_utils
         $user = $DB->get_record('user', array($column => $externalid));
         return $user;
     }
-    
+
+    /**
+     * Returns the configured first-name value for a user.
+     * Falls back to $user->firstname (with a developer warning) if the configured field is empty.
+     *
+     * @param stdClass $user A Moodle user record.
+     * @return string
+     */
+    public static function get_user_firstname(stdClass $user): string {
+        $field = !empty(static::$config->user_firstname_field) ? static::$config->user_firstname_field : 'firstname';
+        $value = isset($user->$field) ? (string)$user->$field : '';
+        if ($value === '') {
+            debugging(
+                "local_tomax: configured first-name field '$field' is empty for user {$user->id}; falling back to firstname.",
+                DEBUG_DEVELOPER
+            );
+            $value = isset($user->firstname) ? (string)$user->firstname : '';
+        }
+        return $value;
+    }
+
+    /**
+     * Returns the configured last-name value for a user.
+     * Falls back to $user->lastname (with a developer warning) if the configured field is empty.
+     *
+     * @param stdClass $user A Moodle user record.
+     * @return string
+     */
+    public static function get_user_lastname(stdClass $user): string {
+        $field = !empty(static::$config->user_lastname_field) ? static::$config->user_lastname_field : 'lastname';
+        $value = isset($user->$field) ? (string)$user->$field : '';
+        if ($value === '') {
+            debugging(
+                "local_tomax: configured last-name field '$field' is empty for user {$user->id}; falling back to lastname.",
+                DEBUG_DEVELOPER
+            );
+            $value = isset($user->lastname) ? (string)$user->lastname : '';
+        }
+        return $value;
+    }
+
+    /**
+     * Returns the configured course-name value for a course.
+     * Falls back to $course->fullname (with a developer warning) if the configured field is empty.
+     *
+     * @param stdClass $course A Moodle course record.
+     * @return string
+     */
+    public static function get_course_name(stdClass $course): string {
+        $field = !empty(static::$config->course_name_field) ? static::$config->course_name_field : 'fullname';
+        $value = isset($course->$field) ? (string)$course->$field : '';
+        if ($value === '') {
+            debugging(
+                "local_tomax: configured course-name field '$field' is empty for course {$course->id}; falling back to fullname.",
+                DEBUG_DEVELOPER
+            );
+            $value = isset($course->fullname) ? (string)$course->fullname : '';
+        }
+        return $value;
+    }
+
 }
 tomax_utils::$config = get_config('local_tomax');
