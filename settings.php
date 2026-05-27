@@ -51,33 +51,29 @@ if ($hassiteconfig) {
 
     $settings->add(new admin_setting_heading(
         "local_tomax_settings",
-        // TODORON: change to get_string and add to lang file
-        "Tomax System Configuration",
-        "Define the Tomax system configurations."
+        get_string('tomax_settings_heading', 'local_tomax'),
+        get_string('tomax_settings_desc', 'local_tomax')
     ));
 
     $settings->add(new admin_setting_requiredtext(
         'local_tomax/domain',
-        // TODORON: change to get_string and add to lang file
-        "Domain",
-        "",
+        get_string('domain', 'local_tomax'),
+        '',
         ''
     ));
 
     $settings->add(new admin_setting_configselect(
         'local_tomax/tomax_teacherID',
-        // TODORON: change to get_string and add to lang file
-        'Set the Default Teacher identifier',
-        '',
+        get_string('tomax_teacher_id_field', 'local_tomax'),
+        get_string('tomax_teacher_id_field_desc', 'local_tomax'),
         '',
         $identifierarrayteacher
     ));
 
     $settings->add(new admin_setting_configselect(
         'local_tomax/tomax_studentID',
-        // TODORON: change to get_string and add to lang file
-        'Set the Default Student identifier',
-        '',
+        get_string('tomax_student_id_field', 'local_tomax'),
+        get_string('tomax_student_id_field_desc', 'local_tomax'),
         '',
         $identifierarraystudent
     ));
@@ -134,91 +130,79 @@ if ($hassiteconfig) {
 
     $settings->add(new admin_setting_heading(
         "local_tomax_tet_settings",
-        // TODORON: change to get_string and add to lang file
-        "TomaETest System Configuration",
-        "Define the TomaETest system configurations."
+        get_string('tet_settings_heading', 'local_tomax'),
+        get_string('tet_settings_desc', 'local_tomax')
     ));
 
     $settings->add(new admin_settings_requiredconfigpasswordunmask(
         'local_tomax/etestuserid',
-        // TODORON: change to get_string and add to lang file
-        "TomaETest UserID",
-        "",
+        get_string('tet_userid', 'local_tomax'),
+        '',
         ''
     ));
 
     $settings->add(new admin_settings_requiredconfigpasswordunmask(
         'local_tomax/etestapikey',
-        // TODORON: change to get_string and add to lang file
-        "TomaETest APIKey",
-        "",
+        get_string('tet_apikey', 'local_tomax'),
+        '',
         ''
     ));
 
     $checkconnection = new moodle_url('/local/tomax/misc/checkTETConnection.php');
     $settings->add(new admin_setting_heading(
         "tet_connection_check",
-        // TODORON: change to get_string and add to lang file
-        "TomaETest Connection Check",
-        "Click here to check your TomaETest connection (save the changes before checking): <button type='button' onclick='window.open(\"$checkconnection\", \"_self\")'>Check Connection</button>"
+        get_string('tet_connection_check_heading', 'local_tomax'),
+        get_string('tet_connection_check_desc', 'local_tomax', $checkconnection->out(false))
     ));
 
     $settings->add(new admin_setting_heading(
         "local_tomax_tg_settings",
-        // TODORON: change to get_string and add to lang file
-        "TomaGrade System Configuration",
-        "Define the TomaGrade system configurations."
+        get_string('tg_settings_heading', 'local_tomax'),
+        get_string('tg_settings_desc', 'local_tomax')
     ));
 
     $settings->add(new admin_settings_requiredconfigpasswordunmask(
         'local_tomax/tguserid',
-        // TODORON: change to get_string and add to lang file
-        "TomaGrade UserID",
-        "",
+        get_string('tg_userid', 'local_tomax'),
+        '',
         ''
     ));
 
     $settings->add(new admin_settings_requiredconfigpasswordunmask(
         'local_tomax/tgapikey',
-        // TODORON: change to get_string and add to lang file
-        "TomaGrade APIKey",
-        "",
+        get_string('tg_apikey', 'local_tomax'),
+        '',
         ''
     ));
 
     $checkconnection = new moodle_url('/local/tomax/misc/checkTGConnection.php');
     $settings->add(new admin_setting_heading(
         "tg_connection_check",
-        // TODORON: change to get_string and add to lang file
-        "TomaGrade Connection Check",
-        "Click here to check your TomaGrade connection (save the changes before checking): <button type='button' onclick='window.open(\"$checkconnection\", \"_self\")'>Check Connection</button>"
+        get_string('tg_connection_check_heading', 'local_tomax'),
+        get_string('tg_connection_check_desc', 'local_tomax', $checkconnection->out(false))
     ));
 
     $settings->add(new admin_setting_heading(
         "local_tomax_proxy_settings",
-        // TODORON: change to get_string and add to lang file
-        "Proxy Settings",
-        ""
+        get_string('proxy_settings_heading', 'local_tomax'),
+        ''
     ));
     $settings->add(new admin_setting_configcheckbox(
         'local_tomax/useProxy',
-        // TODORON: change to get_string and add to lang file
-        "Use Proxy",
-        "",
+        get_string('use_proxy', 'local_tomax'),
+        '',
         '0'
     ));
     $settings->add(new admin_setting_configtext(
         'local_tomax/proxyURL',
-        // TODORON: change to get_string and add to lang file
-        "Proxy URL",
-        "",
+        get_string('proxy_url', 'local_tomax'),
+        '',
         ''
     ));
     $settings->add(new admin_setting_configtext(
         'local_tomax/proxyPort',
-        // TODORON: change to get_string and add to lang file
-        "Proxy Port",
-        "",
+        get_string('proxy_port', 'local_tomax'),
+        '',
         ''
     ));
 }

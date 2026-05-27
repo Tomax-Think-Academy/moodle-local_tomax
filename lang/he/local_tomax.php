@@ -31,6 +31,37 @@ $string['identifier_by_email'] = 'כתובת אימייל';
 $string['identifier_by_id'] = 'מספר זהות';
 $string['identifier_by_username'] = 'שם משתמש';
 
+// Tomax System Configuration section
+$string['tomax_settings_heading'] = 'הגדרות מערכת Tomax';
+$string['tomax_settings_desc']    = 'הגדר את תצורת מערכת Tomax.';
+$string['domain']                 = 'דומיין';
+$string['tomax_teacher_id_field']       = 'מזהה חיצוני למורה';
+$string['tomax_teacher_id_field_desc']  = 'שדה פרופיל המשתמש הנשלח ל-Tomax כמזהה החיצוני הייחודי של המורה (למשל עבור SSO וסנכרון קורסים). חייב להיות ייחודי לכל משתמש.';
+$string['tomax_student_id_field']       = 'מזהה חיצוני לתלמיד';
+$string['tomax_student_id_field_desc']  = 'שדה פרופיל המשתמש הנשלח ל-Tomax כמזהה החיצוני הייחודי של התלמיד (למשל עבור סנכרון משתתפים ואימות זהות). חייב להיות ייחודי לכל משתמש.';
+
+// TomaETest System Configuration section
+$string['tet_settings_heading']        = 'הגדרות מערכת TomaETest';
+$string['tet_settings_desc']           = 'הגדר את תצורת מערכת TomaETest.';
+$string['tet_userid']                  = 'TomaETest UserID';
+$string['tet_apikey']                  = 'TomaETest APIKey';
+$string['tet_connection_check_heading'] = 'בדיקת חיבור TomaETest';
+$string['tet_connection_check_desc']   = 'לחץ כאן לבדיקת חיבור TomaETest (שמור את השינויים לפני הבדיקה): <button type=\'button\' onclick=\'window.open("{$a}", "_self")\'>בדוק חיבור</button>';
+
+// TomaGrade System Configuration section
+$string['tg_settings_heading']        = 'הגדרות מערכת TomaGrade';
+$string['tg_settings_desc']           = 'הגדר את תצורת מערכת TomaGrade.';
+$string['tg_userid']                  = 'TomaGrade UserID';
+$string['tg_apikey']                  = 'TomaGrade APIKey';
+$string['tg_connection_check_heading'] = 'בדיקת חיבור TomaGrade';
+$string['tg_connection_check_desc']   = 'לחץ כאן לבדיקת חיבור TomaGrade (שמור את השינויים לפני הבדיקה): <button type=\'button\' onclick=\'window.open("{$a}", "_self")\'>בדוק חיבור</button>';
+
+// Proxy Settings section
+$string['proxy_settings_heading'] = 'הגדרות פרוקסי';
+$string['use_proxy']              = 'השתמש בפרוקסי';
+$string['proxy_url']              = 'כתובת פרוקסי';
+$string['proxy_port']             = 'פורט פרוקסי';
+
 $string['well_connected'] = "המערכת שלך מחוברת היטב!";
 $string['connection_auth_error'] = "אנא בדוק את APIKey שלך ו-UserID";
 $string['no_TET_open_connection'] = "נראה שאין לך חיבור פתוח ל- TomaETest";
